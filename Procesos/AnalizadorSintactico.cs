@@ -1117,11 +1117,11 @@ namespace Procesos
                 }
                     
             }
-            else if (indicePuntoComa - posCursor == 2)
+            else if (indicePuntoComa - posCursor == 4)
             {
-                if (lexemas[posCursor].TipoElemento == Enums.TipoElemento.Variable &&
-                    lexemas[posCursor + 1].TipoElemento == Enums.TipoElemento.OperadorAsignacion &&
-                    lexemas[posCursor + 2].TipoElemento == Enums.TipoElemento.Numero)
+                if (lexemas[posCursor + 1].TipoElemento == Enums.TipoElemento.Variable &&
+                    lexemas[posCursor + 2].TipoElemento == Enums.TipoElemento.OperadorAsignacion &&
+                    lexemas[posCursor + 3].TipoElemento == Enums.TipoElemento.Numero)
                 {
                     return true;
                 }

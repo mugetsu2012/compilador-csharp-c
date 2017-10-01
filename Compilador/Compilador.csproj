@@ -129,7 +129,12 @@
   </ItemGroup>
   <ItemGroup>
     <Content Include="codeIcon.ico" />
+    <Content Include="Ejemplos\Anidacion.c" />
+    <Content Include="Ejemplos\DoWhile.c" />
+    <Content Include="Ejemplos\For.c" />
+    <Content Include="Ejemplos\while.c" />
     <None Include="Resources\codeIcon.png" />
   </ItemGroup>
+  <ItemGroup />
   <Import Project="$(MSBuildToolsPath)\Microsoft.CSharp.targets" />
 </Project>
