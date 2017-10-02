@@ -1,6 +1,7 @@
 int main () {
 
-   int a, y;
+   int a; 
+   int y;
 	
    /* for loop execution */
    for( a = 10; a < 20; a = a + 1 ){

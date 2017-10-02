@@ -1,7 +1,8 @@
 int main () {
 
    /* local variable definition */
-   int i, j;
+   int i;
+   int j;
    int y;
    
    for(i = 2; i<100; i++) {
