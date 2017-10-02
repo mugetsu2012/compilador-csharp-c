@@ -79,10 +79,10 @@ namespace Procesos
                 var indiceActual = listadoLexemas.IndexOf(lexema);
                 Enums.TipoVariable? tipoVariable = null;
 
-                if (listadoLexemas.ElementAtOrDefault(indiceActual - 1) != null)
-                {
-                    tipoVariable = TextoToTipo(listadoLexemas[indiceActual - 1].Texto);
-                }
+                //if (listadoLexemas.ElementAtOrDefault(indiceActual - 1) != null)
+                //{
+                //    tipoVariable = TextoToTipo(listadoLexemas[indiceActual - 1].Texto);
+                //}
 
                 InsertarRegistro(new RegistroTabla { Nombre = lexema.Texto , TipoVariable = tipoVariable});
 
