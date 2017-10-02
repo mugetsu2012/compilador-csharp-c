@@ -307,7 +307,7 @@ namespace Compilador
                 arbolSintax.Nodes.Add(root);
 
                 //Desde aca se hace el analisis semantico
-                _analizadorSemantico.ProcesarLexemas(lexemas);
+                _analizadorSemantico.ProcesarLexemas(lexemas, bloques);
 
                 if (_analizadorSemantico.Errores.Count > 0)
                 {

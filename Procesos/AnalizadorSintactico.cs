@@ -315,7 +315,7 @@ namespace Procesos
         public Bloque AnalizarBloqueFuncion(List<Lexema> lexemas, ref int posCursor, int finBloquePadre)
         {
             Bloque bloque = new Bloque();
-            bloque.TipoBloque = Enums.TipoBloque.Estructura;
+            bloque.TipoBloque = Enums.TipoBloque.Funcion;
             bloque.Incia = posCursor;
             bloque.Lexemas.Add(lexemas[posCursor]);
             posCursor++;

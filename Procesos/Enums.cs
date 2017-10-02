@@ -133,7 +133,8 @@ namespace Procesos
         public enum TipoBloque
         {
             Sentencia,
-            Estructura
+            Estructura,
+            Funcion
         }
 
         public static string TipoVariablePatron()
