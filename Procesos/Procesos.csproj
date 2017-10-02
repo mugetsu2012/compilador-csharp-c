@@ -41,6 +41,7 @@
   </ItemGroup>
   <ItemGroup>
     <Compile Include="AnalizadorLexico.cs" />
+    <Compile Include="AnalizadorSemantico.cs" />
     <Compile Include="AnalizadorSintactico.cs" />
     <Compile Include="Bloque.cs" />
     <Compile Include="Lexema.cs" />

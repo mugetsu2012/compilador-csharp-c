@@ -13,9 +13,6 @@ namespace Procesos
             TablaSimbolos = new TablaSimbolos();
         }
 
-        #region Reglas y tabla
-
-
         public TablaSimbolos TablaSimbolos { get; set; }
 
         public void ConstruirTablaSimbolos(List<Lexema> lexemas)
@@ -23,6 +20,11 @@ namespace Procesos
             TablaSimbolos = new TablaSimbolos();
             TablaSimbolos.ProcesarListadoLexemas(lexemas);
         }
+
+        #region Reglas
+
+
+
 
         public string AplicarReglasTipoVar(int indice, List<Lexema> lexemas)
         {
@@ -123,7 +125,8 @@ namespace Procesos
                 if (lexemaSiguiente.TipoElemento != Enums.TipoElemento.Variable &&
                     lexemaSiguiente.TipoElemento != Enums.TipoElemento.Numero &&
                     lexemaSiguiente.TipoElemento != Enums.TipoElemento.Cadena &&
-                    lexemaSiguiente.TipoElemento != Enums.TipoElemento.Caracter)
+                    lexemaSiguiente.TipoElemento != Enums.TipoElemento.Caracter &&
+                    lexemaSiguiente.TipoElemento != Enums.TipoElemento.Parentesis)
                 {
                     mensajeError = "Sintaxis incorrecta, asignacion no válida. Elemento: " + lexema.Texto;
                 }
@@ -150,9 +153,11 @@ namespace Procesos
                 Lexema lexemaAnterior = lexemas[indice - 1];
 
                 if ((lexemaAnterior.TipoElemento != Enums.TipoElemento.Numero &&
-                     lexemaAnterior.TipoElemento != Enums.TipoElemento.Variable) ||
+                     lexemaAnterior.TipoElemento != Enums.TipoElemento.Variable &&
+                     lexemaAnterior.TipoElemento != Enums.TipoElemento.Parentesis) ||
                     (lexemaSiguiente.TipoElemento != Enums.TipoElemento.Numero &&
-                     lexemaSiguiente.TipoElemento != Enums.TipoElemento.Variable))
+                     lexemaSiguiente.TipoElemento != Enums.TipoElemento.Variable &&
+                     lexemaSiguiente.TipoElemento != Enums.TipoElemento.Parentesis))
                 {
                     mensajeError = "Sintaxis incorrecta, uso inadecuado del operador. Elemento: " +"\""+ lexema.Texto + "\"";
                 }
@@ -380,7 +385,7 @@ namespace Procesos
             bloque.Lexemas.Add(lexemas[posCursor]);
             posCursor++;
 
-            if (lexemas[posCursor].Texto == "(")
+            if (lexemas.ElementAtOrDefault(posCursor) != null && lexemas[posCursor].Texto == "(")
             {
 
                 if (lexemas.FirstOrDefault(x => x.Texto == ")") != null)
@@ -422,7 +427,7 @@ namespace Procesos
                                     posCursor++;
                                 }
 
-                                if (lexemas[posCursor].Texto == "{")
+                                if (lexemas.ElementAtOrDefault(posCursor) != null && lexemas[posCursor].Texto == "{")
                                 {
                                     bloque.Lexemas.Add(lexemas[posCursor]);
                                     posCursor++;
@@ -867,8 +872,8 @@ namespace Procesos
             }
             else if (!DelimitadoresBalanceados(lexemas, "(", ")", posCursor, indicePuntoComa))
             {
-                bloque.Error = "Los parentesis para esta sentencia no estan balanceados";
-                posCursor++;
+                return BloqueError(lexemas, "Los parentesis para esta sentencia no estan balanceados", ref posCursor,
+                    finBloquePadre);
             }
             else
             {

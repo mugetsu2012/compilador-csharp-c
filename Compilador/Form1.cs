@@ -17,6 +17,7 @@ namespace Compilador
         private readonly AnalizadorLexico _analizadorLexico;
         private readonly TablaSimbolos _tablaSimbolos;
         private readonly AnalizadorSintactico _analizadorSintactico;
+        private readonly AnalizadorSemantico _analizadorSemantico;
         OpenFileDialog openFile = new OpenFileDialog();
         SaveFileDialog saveFile = new SaveFileDialog();
         
@@ -26,6 +27,7 @@ namespace Compilador
             _analizadorLexico = new AnalizadorLexico();
             _tablaSimbolos = new TablaSimbolos();
             _analizadorSintactico = new AnalizadorSintactico();
+            _analizadorSemantico = new AnalizadorSemantico();
             cuadroResultados.ScrollBars = ScrollBars.Both;
             cuadroResultados.WordWrap = false;
             cuadroTexto.ScrollBars = ScrollBars.Both;
@@ -275,6 +277,55 @@ namespace Compilador
 
         }
 
+        private void btnSemantic_Click(object sender, EventArgs e)
+        {
+            string codigo = cuadroTexto.Text;
+            codigo += "\r\n";
+            string codigoSinComent = _analizadorLexico.RetirarComentarios(codigo);
+            string codigoSinSaltos = _analizadorLexico.RetirarSaltos(codigoSinComent);
+            List<Lexema> lexemas = _analizadorLexico.ExtraerLexemas(codigoSinSaltos);
+
+            int pos = 0;
+
+
+            List<Bloque> bloques = _analizadorSintactico.RealizarAnalisisSintax(lexemas, ref pos, lexemas.Count);
+            bloques.ForEach(y => y.HacersePadre());
+            List<Bloque> bloquesFlat = bloques.SelectMany(y => y.BloquesPlanos()).ToList();
+
+
+            List<string> errores = _analizadorSintactico.ExtraerErroresBloques(bloques);
+            if (errores.Count > 0)
+            {
+                arbolSintax.Nodes.Clear();
+                cuadroResultados.Text = ArmarErroresSintax(errores);
+            }
+            else
+            {
+                TreeNode root = null;
+                arbolSintax.Nodes.Clear();
+                LlenarArbol(ref root, bloquesFlat);
+                arbolSintax.Nodes.Add(root);
+
+                //Desde aca se hace el analisis semantico
+                _analizadorSemantico.ProcesarLexemas(lexemas);
+
+                if (_analizadorSemantico.Errores.Count > 0)
+                {
+                    string erroresSemantic = ArmarErroresSintax(_analizadorSemantico.Errores);
+                    cuadroResultados.Text = erroresSemantic;
+
+                }
+                else
+                {
+                    cuadroResultados.Text = "Analisis semantico correcto";
+                }
+
+                LimpiarTablaSimbolos();
+                ImprimirTablaSimbolos(_analizadorSemantico.TablaSimbolos.RegistrosTabla);
+
+            }
+        }
+
         private string ArmarErroresSintax(List<string> list)
         {
             string result = "Se detectaron los siguientes errores: \r\n";
@@ -342,5 +393,12 @@ namespace Compilador
         {
             tablaSimbolos.Rows.Clear();
         }
+
+        private void btnCompilar_Click(object sender, EventArgs e)
+        {
+
+        }
+
+        
     }
 }

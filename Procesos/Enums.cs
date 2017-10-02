@@ -92,7 +92,8 @@ namespace Procesos
             Float,
             Double,
             LongDouble,
-            Void
+            Void,
+            CharString
 
         }
 

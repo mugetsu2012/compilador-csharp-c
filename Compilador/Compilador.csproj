@@ -130,6 +130,7 @@
   <ItemGroup>
     <Content Include="codeIcon.ico" />
     <Content Include="Ejemplos\Anidacion.c" />
+    <Content Include="Ejemplos\AsignacionSimple.c" />
     <Content Include="Ejemplos\DoWhile.c" />
     <Content Include="Ejemplos\For.c" />
     <Content Include="Ejemplos\while.c" />

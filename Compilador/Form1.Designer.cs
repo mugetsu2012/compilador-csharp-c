@@ -184,6 +184,7 @@ namespace Compilador
             this.btnSemantic.SizeMode = System.Windows.Forms.PictureBoxSizeMode.StretchImage;
             this.btnSemantic.TabIndex = 7;
             this.btnSemantic.TabStop = false;
+            this.btnSemantic.Click += new System.EventHandler(this.btnSemantic_Click);
             this.btnSemantic.MouseLeave += new System.EventHandler(this.btnSemantic_MouseLeave);
             this.btnSemantic.MouseHover += new System.EventHandler(this.btnSemantic_MouseHover);
             // 
@@ -273,6 +274,7 @@ namespace Compilador
             this.btnCompilar.SizeMode = System.Windows.Forms.PictureBoxSizeMode.StretchImage;
             this.btnCompilar.TabIndex = 1;
             this.btnCompilar.TabStop = false;
+            this.btnCompilar.Click += new System.EventHandler(this.btnCompilar_Click);
             this.btnCompilar.MouseLeave += new System.EventHandler(this.btnCompilar_MouseLeave);
             this.btnCompilar.MouseHover += new System.EventHandler(this.btnCompilar_MouseHover);
             // 
