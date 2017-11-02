@@ -44,12 +44,15 @@
     <Compile Include="AnalizadorSemantico.cs" />
     <Compile Include="AnalizadorSintactico.cs" />
     <Compile Include="Bloque.cs" />
+    <Compile Include="ExpresionTripleta.cs" />
+    <Compile Include="GeneradorCodigo.cs" />
     <Compile Include="Lexema.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
     <Compile Include="RegistroTabla.cs" />
     <Compile Include="Enums.cs" />
     <Compile Include="TablaSimbolos.cs" />
     <Compile Include="Token.cs" />
+    <Compile Include="Tripleta.cs" />
   </ItemGroup>
   <Import Project="$(MSBuildToolsPath)\Microsoft.CSharp.targets" />
 </Project>

@@ -156,6 +156,7 @@ namespace Compilador
             this.btnMachine.SizeMode = System.Windows.Forms.PictureBoxSizeMode.StretchImage;
             this.btnMachine.TabIndex = 9;
             this.btnMachine.TabStop = false;
+            this.btnMachine.Click += new System.EventHandler(this.btnMachine_Click);
             this.btnMachine.MouseLeave += new System.EventHandler(this.btnMachine_MouseLeave);
             this.btnMachine.MouseHover += new System.EventHandler(this.btnMachine_MouseHover);
             // 
@@ -170,6 +171,7 @@ namespace Compilador
             this.btnIntermedio.SizeMode = System.Windows.Forms.PictureBoxSizeMode.StretchImage;
             this.btnIntermedio.TabIndex = 8;
             this.btnIntermedio.TabStop = false;
+            this.btnIntermedio.Click += new System.EventHandler(this.btnIntermedio_Click);
             this.btnIntermedio.MouseLeave += new System.EventHandler(this.btnIntermedio_MouseLeave);
             this.btnIntermedio.MouseHover += new System.EventHandler(this.btnIntermedio_MouseHover);
             // 
