@@ -2,10 +2,13 @@
 using System.Collections.Generic;
 using System.ComponentModel;
 using System.Data;
+using System.Diagnostics;
 using System.Drawing;
 using System.IO;
 using System.Linq;
+using System.Reflection;
 using System.Text;
+using System.Threading;
 using System.Threading.Tasks;
 using System.Windows.Forms;
 using Procesos;
@@ -403,7 +406,75 @@ namespace Compilador
 
         private void btnMachine_Click(object sender, EventArgs e)
         {
+            string codigo = cuadroTexto.Text;
+            codigo += "\r\n";
+            string codigoSinComent = _analizadorLexico.RetirarComentarios(codigo);
+            string codigoSinSaltos = _analizadorLexico.RetirarSaltos(codigoSinComent);
+            List<Lexema> lexemas = _analizadorLexico.ExtraerLexemas(codigoSinSaltos);
 
+            int pos = 0;
+
+
+            List<Bloque> bloques = _analizadorSintactico.RealizarAnalisisSintax(lexemas, ref pos, lexemas.Count);
+            bloques.ForEach(y => y.HacersePadre());
+            List<Bloque> bloquesFlat = bloques.SelectMany(y => y.BloquesPlanos()).ToList();
+
+
+            List<string> errores = _analizadorSintactico.ExtraerErroresBloques(bloques);
+            if (errores.Count > 0)
+            {
+                arbolSintax.Nodes.Clear();
+                cuadroResultados.Text = ArmarErroresSintax(errores);
+            }
+            else
+            {
+                TreeNode root = null;
+                arbolSintax.Nodes.Clear();
+                LlenarArbol(ref root, bloquesFlat);
+                arbolSintax.Nodes.Add(root);
+
+                //Desde aca se hace el analisis semantico
+                _analizadorSemantico.ProcesarLexemas(lexemas, bloques);
+
+                if (_analizadorSemantico.Errores.Count > 0)
+                {
+                    string erroresSemantic = ArmarErroresSintax(_analizadorSemantico.Errores);
+                    cuadroResultados.Text = erroresSemantic;
+
+                }
+                else
+                {
+                    //Aca realizamos el proceso
+                    string path = Path.Combine(GetPathGcc(), "temp.c");
+
+
+                    using (StreamWriter bw = new StreamWriter(File.Create(path)))
+                    {
+                        bw.Write(FormatearCuadroTexto());
+                        bw.Close();
+                    }
+
+                    //En este punto está el archivo c creado, vamos a crear el archivo asm
+                    GenerarAsm();
+
+                    //Leemos el ASM
+                    string pathAsm = Path.Combine(GetPathGcc(), "temp.s");
+
+                    Thread.Sleep(2000);
+                    LeerAsm(pathAsm);
+
+
+                    //Borramos los dos archivos
+                    File.Delete(path);
+                    File.Delete(pathAsm);
+                }
+
+                
+
+                LimpiarTablaSimbolos();
+                ImprimirTablaSimbolos(_analizadorSemantico.TablaSimbolos.RegistrosTabla);
+
+            }
         }
 
         private void btnIntermedio_Click(object sender, EventArgs e)
@@ -462,6 +533,66 @@ namespace Compilador
                 ImprimirTablaSimbolos(_analizadorSemantico.TablaSimbolos.RegistrosTabla);
 
             }
+        }
+
+        private static string GetPathLibrearia()
+        {
+            string parentOfStartupPath = Path.GetFullPath(Path.Combine(Application.StartupPath, @"../../"));
+            parentOfStartupPath = Path.Combine(parentOfStartupPath, @"libreriaC");
+            return parentOfStartupPath;
+        }
+
+        private static string GetPathGcc()
+        {
+            string path = Path.Combine(GetPathLibrearia(), @"bin");
+            return path;
+        }
+
+        private void GenerarAsm()
+        {
+            string pathGcc = GetPathGcc(); // Example of location
+
+            var process = new System.Diagnostics.Process();
+            var startInfo = new System.Diagnostics.ProcessStartInfo
+            {
+                WorkingDirectory = pathGcc,
+                WindowStyle = System.Diagnostics.ProcessWindowStyle.Hidden,
+                FileName = "cmd.exe",
+                RedirectStandardInput = true,
+                UseShellExecute = false,
+                CreateNoWindow = true
+
+            };
+
+            process.StartInfo = startInfo;
+            process.Start();
+            process.StandardInput.WriteLine("gcc -S temp.c");
+        }
+
+        public void LeerAsm(string path)
+        {
+            try
+            {
+                using (StreamReader r = new StreamReader(path))
+                {
+                    string texto = r.ReadToEnd();
+                    cuadroResultados.Text = texto;
+                }
+
+                cuadroResultados.Text = cuadroResultados.Text.Replace("GCC: (MinGW.org GCC-6.3.0-1) 6.3.0",
+                    "Universidad Don Bosco Compiladores Ciclo 2 2017");
+            }
+            catch (Exception ex)
+            {
+                MessageBox.Show("Error al leer el archivo: " + ex.Message);
+            }
+        }
+
+        private string FormatearCuadroTexto()
+        {
+            string texto = "int main() {" + cuadroTexto.Text + " return 0; }";
+            return texto;
+            
         }
     }
 }
